@@ -1,13 +1,18 @@
 import { useState } from 'react'
 
+// Ampliare l'esercizio precedente aggiungendo, nel form, i campi per immagine, contenuto, categoria (select), 
+// tags (lista di checkbox) e uno stato per pubblicare o meno l'articolo. Utilizzare un unico oggetto per gestire tutti i dati del form.
+// BONUS:
+// Aggiungere uno useEffect che mostri un alert quando l’utente clicca sull’apposita checkbox per pubblicare un articolo.
+
 export default function AppMain(){
 
-  const initialTasks = [
-    'Learn JS','Learn PHP','Learn Laravel','Learn Python','Learn C#','Learn C++','Learn AI'
-  ];
+  const initialTasks = ['Learn JS','Learn PHP','Learn Laravel','Learn Python','Learn C#','Learn C++','Learn AI'];
 
   const [tasks, setTasks] = useState(initialTasks);
   const [newTask, setNewTask] = useState('');
+  const [file, setFile] = useState();
+
   
   function addTask(e){
     e.preventDefault();  //INFOPreviene il refresh della pagina
@@ -24,6 +29,7 @@ export default function AppMain(){
     setTasks(newTasks_local);
     setNewTask('');
   }
+
   function handleTrashTaskClick(e){
     const taskIndexToTrash = Number(e.target.getAttribute('data-index'));
     //console.log(tasks, taskIndexToTrash);
@@ -31,15 +37,19 @@ export default function AppMain(){
     console.log(newTasks_local);
     setTasks(newTasks_local);
   }
+  function addImage(e) {
+    console.log(e.target.files);
+    setFile(URL.createObjectURL(e.target.files[0]));
+  }
 
-    return(
-        <main>
-        <h1>Todolist</h1>
-        <form onSubmit={addTask}>
+  return(
+    <main>
+      <h1>Todolist</h1>
+      <form onSubmit={addTask}>
         <div className='mb-3'>
-            <label htmlFor="task" className='form-control'></label>
+          <label htmlFor="task" className='form-control'></label>
 
-            <div className='input-group mb-3'>
+          <div className='input-group mb-3'>
             <input type="text" 
                 className='form-control'
                 placeholder="Recipient's username"
@@ -48,23 +58,24 @@ export default function AppMain(){
                 value={newTask}
                 onChange={e=>setNewTask(e.target.value)}
             />
+            <input type="file" onChange={addImage} />
             <button className='btn btn-outline-secondary' type='submit' id='button-addon2'>Add Task</button>
-            </div>
-
-            <small id='taskHelperId' className='form-text text-muted'>Type your new task</small>
+            <img src={file}/>
+          </div>
+          <small id='taskHelperId' className='form-text text-muted'>Type your new task</small>
         </div>
-        </form>
+      </form>
 
-        <ul className='list-group d-flex justify-content-between'>
+      <ul className='list-group d-flex justify-content-between'>
         {tasks.map((item,index)=>
-            <li key={index} className='list-group-item'>
+          <li key={index} className='list-group-item'>
             {item}
             <button onClick={handleTrashTaskClick} data-index={index} className='btn btn-danger'>
-                <i className='bi bi-trash'></i>
+              <i className='bi bi-trash'></i>
             </button>
-            </li>
+          </li>
         )}
-        </ul>
-        </main> 
+      </ul>
+    </main> 
     );
 }
