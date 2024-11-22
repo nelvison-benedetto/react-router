@@ -1,10 +1,5 @@
 import { useState, useEffect} from 'react'
 
-// Ampliare l'esercizio precedente aggiungendo, nel form, i campi per immagine, contenuto, categoria (select), 
-// tags (lista di checkbox) e uno stato per pubblicare o meno l'articolo. Utilizzare un unico oggetto per gestire tutti i dati del form.
-// BONUS:
-// Aggiungere uno useEffect che mostri un alert quando l’utente clicca sull’apposita checkbox per pubblicare un articolo.
-
 export default function AppMain(){
 
   const initialTasks = ['Learn JS','Learn PHP','Learn Laravel','Learn Python','Learn C#','Learn C++','Learn AI'];
@@ -13,6 +8,8 @@ export default function AppMain(){
   const [newTask, setNewTask] = useState('');
   const [searchText, setSearchText] = useState('');
   const [filteredTasks, setFilteredTasks] = useState(tasks);
+  const [fileUpload, setFileUpload] = useState();
+  const [selectedCategory, setSelectedCategory] = useState();
 
   useEffect(()=>{
     const filteredTasks = tasks.filter((item,index)=> item.toLowerCase().includes(searchText.toLowerCase()));
@@ -49,13 +46,20 @@ export default function AppMain(){
     alert('Form sent');
   }
 
-  function addImage(e) {
+  function handleFileUpload(e){
     console.log(e.target.files);
-    setFile(URL.createObjectURL(e.target.files[0]));
+    setFileUpload(URL.createObjectURL(e.target.files[0]));
   }
 
+  function handleCategoryChange(e){
+    setSelectedCategory(e.target.value);
+  }
+
+
+
+
   return(
-    <main>
+    <main id=''>
       <div className='container'>
 
         {/* H1 + Search  */}
@@ -91,6 +95,7 @@ export default function AppMain(){
                 value={newTask}
                 onChange={e=>setNewTask(e.target.value)}  //dinamic edit setNewTask edita il value
               />
+              < input type = "file" onChange={fileUpload}/>
               <button className='btn btn-outline-secondary' type='submit' id='button-addon2'>Add Task</button>
                 {/* type='submit' send the form execute addTask */}
             </div>
@@ -98,6 +103,80 @@ export default function AppMain(){
             <small id='taskHelperId' className='form-text text-muted'>Type your new task</small>  {/* little instruction under form */}
           </div>
         </form>
+
+
+        <form className='my-3'>
+          <div className='row'>
+            <div className='form-group col-md-6 '>
+              <div className='form-group mb-3'>
+                <label className='' htmlFor="inputTitleBlog">Title</label>
+                <input className='form-control' type="text" id="inputTitleBlog" name="inputTitleBlog" placeholder='Title'/>
+              </div>
+
+              <div className='row mb-3'>
+                <div className='form-group col-md-6 '>
+                  <label htmlFor="fileBlog" className='form-label'>Insert the cover image</label>
+                  <label className="btn btn-primary" htmlFor="fileBlog">Choose File</label> 
+                  <input className="form-control d-none" type="file" id="fileBlog" onChange={handleFileUpload}/>
+                  {fileUpload && <img src={fileUpload} alt='cover image' className='img-fluid rounded'/>}
+                </div>
+                <div className='form-group col-md-6'>
+                  <label htmlFor="categorySelect">Select category</label>
+                  <select className='form-select ' id='categorySelect' name='categorySelect' value={selectedCategory} onChange={handleCategoryChange}>
+                    <option value="">Category</option>
+                    <option value="Shonen">Shonen</option>
+                    <option value="Shojo">Shojo</option>
+                    <option value="Seinen">Seinen</option>
+                    <option value="Josei">Josei</option>
+                    <option value="Kodomo">Kodomo</option>
+                  </select>
+                </div>
+              </div>
+              <div className='row'>
+                <div className='form-group col-md-6 ps-4'>
+                  <div className='row'>
+                    <div className='form-check col-md-6'>
+                      <input className="form-check-input" type="checkbox" value="" id='checkBtnIsekai' name='checkBtnIsekai'/>
+                      <label className='form-check-label' htmlFor="checkBtnIsekai">Isekai</label>
+                    </div>
+                    <div className='form-check col-md-6'>
+                      <input className="form-check-input" type="checkbox" value="" id='checkBtnMecha' name='checkBtnMecha'/>
+                      <label className='form-check-label' htmlFor="checkBtnMecha">Mecha</label>
+                    </div>
+                    <div className='form-check col-md-6'>
+                      <input className="form-check-input" type="checkbox" value="" id='checkBtnSliceofLife' name='checkBtnSliceofLife'/>
+                      <label className='form-check-label' htmlFor="checkBtnSliceofLife">Slice of Life</label>
+                    </div>
+                    <div className='form-check col-md-6'>
+                      <input className="form-check-input" type="checkbox" value="" id='checkBtnRomanticComedy' name='checkBtnRomanticComedy'/>
+                      <label className='form-check-label' htmlFor="checkBtnRomanticComedy">Romantic Comedy</label>
+                    </div>
+                    <div className='form-check col-md-6'>
+                      <input className="form-check-input" type="checkbox" value="" id='checkBtnFantasy' name='checkBtnFantasy'/>
+                      <label className='form-check-label' htmlFor="checkBtnFantasy">Fantasy</label>
+                    </div>
+                  </div>
+                </div>
+                <div className='form-group col-md-6 d-flex justify-content-center gap-4'>
+                  <div>
+                    <input className='btn-checks me-1' type="radio" id='radioBtnPost' name='radioPostOrArchive' value="" autoComplete='off'/>
+                    <label className='btn btn-outline-primary' htmlFor="radioBtnPost">Post</label>
+                  </div>
+                  <div>
+                    <input className='btn-checks me-1' type="radio" id='radioBtnArchive' name='radioPostOrArchive' value="" autoComplete='off'/>
+                    <label className='btn btn-outline-primary' htmlFor="radioBtnArchive">Archive</label>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className='form-group col-md-6'>
+              <label htmlFor="inputContentBlog">Content</label>
+              <textarea className='form-control' type="text" rows='7' id='inputContentBlog' name='inputContentBlog' placeholder='Content'/>
+            </div>
+          </div>
+        </form>
+
+
 
         {/* All Tasks */}
         <ul className='list-group '>
@@ -114,3 +193,5 @@ export default function AppMain(){
     </main> 
   );
 }
+
+// Lorem ipsum dolor sit amet consectetur adipisicing elit. Ducimus corporis impedit, illo pariatur error itaque dolorem quas delectus adipisci laborum laudantium quisquam debitis facilis id officiis quo illum consequuntur, voluptate nam distinctio ad iure omnis. Sapiente cupiditate quo id modi nihil mollitia cumque ab eos rerum nulla iusto, molestias quas similique officia vel expedita quisquam eveniet veritatis. Minus sequi aspernatur vel similique consectetur consequuntur quidem adipisci aperiam, optio labore est! Mollitia sunt culpa inventore omnis maiores corporis. Velit, id tenetur!

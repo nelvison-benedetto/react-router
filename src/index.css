@@ -3,5 +3,6 @@ img{max-width: 100%;}
 #debug *{border: 1px dashed black;}
 
 :root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family: Helvetica, Inter, system-ui, Avenir, Arial, sans-serif;
+  --rosedark : #C15481;
 }

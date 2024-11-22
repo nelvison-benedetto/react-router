@@ -1,0 +1,22 @@
+@import './index.css'; /* import module x base colors  */
+
+.bg-rosedark{
+    background-color: var(--rosedark);
+}
+/* .form-control{
+    margin: 0 !important;
+    padding: 0 !important;
+}
+.form-group{
+    margin: 0 !important;
+    padding: 0 !important;
+}
+label{
+    margin: 0 !important;
+    padding: 0 !important;
+} */
+
+label{ margin-bottom: 0.2rem;}
+.border{
+    border-color: brown;
+}
