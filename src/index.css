@@ -5,4 +5,5 @@ img{max-width: 100%;}
 :root {
   font-family: Helvetica, Inter, system-ui, Avenir, Arial, sans-serif;
   --rosedark : #C15481;
+  --rosedark-hover: #a84b71;
 }

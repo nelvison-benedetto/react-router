@@ -1,7 +1,9 @@
 export default function AppFooter(){
     return(
        <footer>
-         <span>&#169; {new Date().getFullYear()} - All Rights Reserved</span>
+         <div className="container">
+          <span>&#169; {new Date().getFullYear()} - All Rights Reserved</span>
+         </div>
        </footer> 
     );
 }

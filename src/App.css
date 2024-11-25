@@ -3,20 +3,63 @@
 .bg-rosedark{
     background-color: var(--rosedark);
 }
-/* .form-control{
-    margin: 0 !important;
-    padding: 0 !important;
-}
-.form-group{
-    margin: 0 !important;
-    padding: 0 !important;
-}
-label{
-    margin: 0 !important;
-    padding: 0 !important;
-} */
-
 label{ margin-bottom: 0.2rem;}
-.border{
-    border-color: brown;
+.btn-DarkRose{
+    color: white!important;
+    background-color: var(--rosedark)!important;
+    &:hover, &:focus{
+        background-color: var(--rosedark-hover)!important;
+    }
 }
+.btn-outline-DarkRose{
+    color: var(--rosedark) !important;
+    background-color:white !important;
+    border: 1px solid var(--rosedark) !important;
+    &:hover, &:focus, input[name="visibility"]:checked{
+        background-color: var(--rosedark) !important;
+        color: white !important;
+    }
+    input[type="radio"]:checked + & {
+        background-color: var(--rosedark) !important;
+        color: white !important;
+        border-color: var(--rosedark) !important;
+    }
+}
+
+main{
+    background-color: #262626;
+}
+form{
+    background-color: #464646;
+    color: white;
+}
+
+.custom-card{
+    min-height: 380px;  /* !!!necessary for lg and md, in sm will be larger */
+    z-index: 1;
+    box-shadow: 2.4px 2.4px 4px rgba(0, 0, 0, 0.5);
+    transition: transform 0.62s ease;  /*fluid transaction*/
+}
+.custom-card:hover{
+    cursor: pointer;
+    z-index: 2;
+    transform: translateY(-6px) scale(1.04) rotate(5deg); /*+10px axisY up +5%*/
+    box-shadow: 4.6px 4px 8px rgba(0, 0, 0, 0.5);
+    .pin-card{opacity: 0;}
+    /* overflow: hidden;  nasconde spigolo di img dentro una card rounded */
+}
+.card-content{
+    width: 100%;
+}
+.inner-image{
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;   /*copre il contenitore mantenendo le proporzioni */
+}
+
+
+/*& img{
+    width: 300px;
+    aspect-ratio: 16 / 9;  /*proporzioni video youtube*/
+   /*  object-fit: cover;   /*copre il contenitore mantenendo le proporzioni */
+ /* }*/

@@ -1,22 +1,36 @@
+//AppMain.jsx
 import { useState, useEffect} from 'react'
+import ManhuaCard from './ManhuaCard/ManhuaCard'
 
 export default function AppMain(){
 
-  const initialTasks = ['Learn JS','Learn PHP','Learn Laravel','Learn Python','Learn C#','Learn C++','Learn AI'];
+  // const initialTasks = ['Learn JS','Learn PHP','Learn Laravel','Learn Python','Learn C#','Learn C++','Learn AI'];
+  // const [tasks, setTasks] = useState(initialTasks);  //tasks is the array, setTasks to edit it, initialTasks initial data
+  // const [newTask, setNewTask] = useState('');
+  // const [filteredTasks, setFilteredTasks] = useState(tasks);
 
-  const [tasks, setTasks] = useState(initialTasks);  //tasks is the array, setTasks to edit it, initialTasks initial data
-  const [newTask, setNewTask] = useState('');
+  const availableTags = ['Isekai', 'Mecha', 'Slice of Life', 'Romantic Comedy', 'Fantasy'];
+
+  const initialFormData = {  //the key names (i.e. "title") must be exactly the same in the html (i.e. <...name="title">) to link!
+    title: '',
+    content: '',
+    price: 0,
+    file: null,
+    category: '',
+    tags: [],
+    visibility: ''
+  }
+
+  const [formData, setFormData] = useState(initialFormData)
+  // const [selectedTitle, setSelectedTitle] = useState('');
+  // const [selectedContent, setSelectedContent] = useState('');
+  const [selectedFile, setSelectedFile] = useState(null);
+  // const [selectedCategory, setSelectedCategory] = useState('');
+  // const [selectedTags, setSelectedTags] = useState([]);
+  // const [selectedVisibility, setSelectedVisibility] = useState('');
+  const [mangas, setMangas] = useState([]);
   const [searchText, setSearchText] = useState('');
-  const [filteredTasks, setFilteredTasks] = useState(tasks);
-  const [fileUpload, setFileUpload] = useState();
-  const [selectedCategory, setSelectedCategory] = useState();
-
-  useEffect(()=>{
-    const filteredTasks = tasks.filter((item,index)=> item.toLowerCase().includes(searchText.toLowerCase()));
-    console.log(filteredTasks);
-    setFilteredTasks(filteredTasks);
-  }, [tasks, searchText]  //with [] useEffect is executed only once when the component is first mounted
-  );     //useEffect needs to run every time either tasks or searchText is updated
+  const [filteredMangas, setFilteredMangas] = useState(mangas);
 
 
   function addTask(e){
@@ -32,7 +46,6 @@ export default function AppMain(){
     setTasks(newTasks_local);
     setNewTask('');  //clean input
   }
-
   function handleTrashTaskClick(e){
     const taskIndexToTrash = Number(e.target.getAttribute('data-index'));
     //console.log(tasks, taskIndexToTrash);
@@ -41,89 +54,156 @@ export default function AppMain(){
     setTasks(newTasks_local);
   }
 
+  useEffect(()=>{
+    const filteredMangas = mangas.filter((item,index)=> item.title.toLowerCase().trim().includes(searchText.toLowerCase().trim()));
+    console.log(filteredMangas);
+    setFilteredMangas(filteredMangas);
+  }, [mangas, searchText]  //with [] useEffect is executed only once when the component is first mounted, now each time mangas/searchText change
+  );
+
   function handleSearchForm(e){
     e.preventDefault();
     alert('Form sent');
   }
 
-  function handleFileUpload(e){
-    console.log(e.target.files);
-    setFileUpload(URL.createObjectURL(e.target.files[0]));
+  function handleFormField(e){
+    const {name, type, value, checked} = e.target;  //top properties of an input
+    if (name === "file" && e.target.files.length > 0) {
+      const fileSelect = e.target.files[0];  // Get the file object
+      const fileSelectedURL = URL.createObjectURL(fileSelect);  // Create an object URL for the file
+      setFormData((prev) => ({
+        ...prev,
+        file: fileSelect,  //at submit with form convert obl->fakepath
+      }));
+      setSelectedFile(fileSelectedURL);
+    }
+    if(name==='tags'){
+      const updatedTags = checked ? [...formData.tags, value] :  formData.tags.filter(item=>item!==value);
+      setFormData(prev =>({
+        ...prev,
+        tags: updatedTags
+      }));
+    }
+    else if(type ==='checkbox' || type==='radio'){
+      setFormData(prev =>({
+        ...prev,
+        [name]: checked ? value : ''
+      }));
+    }
+    else{
+      setFormData(prev=>({
+        ...prev,
+        [name]: value
+      }))
+    }
   }
 
-  function handleCategoryChange(e){
-    setSelectedCategory(e.target.value);
+  function handleFormSubmit(e) {
+    e.preventDefault()
+    const newManga = {  
+      id: Date.now(),
+      ...formData,
+      fileObl: selectedFile  //PASS FILE OBL TO SEE IMG ON BROWSER!!submit convert automaticaaly obl->fakepath :( 
+    }
+    setMangas([
+      newManga,
+      ...mangas
+    ]);
+    setFormData(initialFormData)  //reset
+    setSelectedFile(null);
   }
 
+  // function handleChangeTitle(e){
+  //   setSelectedTitle(e.target.value);
+  // }
+  // function handleChangeContent(e){
+  //   setSelectedContent(e.target.value);
+  // }
+  // function handleChangeFile(e){
+  //   console.log(e.target.files);
+  //   setSelectedFile(URL.createObjectURL(e.target.files[0]));
+  //   console.log(selectedFile);
+  // }
+  // function handleChangeCategory(e){
+  //   setSelectedCategory(e.target.value);
+  // }
+  // function handleChangeTag(e){
+  //   const tag = e.target.value;
+  //   const isChecked = e.target.checked;
+  //   if(isChecked){
+  //     setSelectedTags((prevTags)=>[...prevTags,tag]);
+  //   }
+  //   else{
+  //     setSelectedTags((prevTags)=>prevTags.filter((item)=> item !== tag));
+  //   }
+  // }
+  // function handleChangeVisibility(e){
+  //   setSelectedVisibility(e.target.value);
+  // }
+  // function createManga(e){
+  //   e.preventDefault();
+  //   if(selectedTitle.trim()==='' || selectedContent.trim()===''){return;}
+  //   const newManga = {
+  //     title: selectedTitle,
+  //     content : selectedContent,
+  //     file : selectedFile,
+  //     category : selectedCategory,
+  //     tags : selectedTags,
+  //     visibility : selectedVisibility
+  //   };
+  //   setMangas((prevMangas) =>[...prevMangas, newManga]);
+  //   setSelectedTitle('');
+  //   setSelectedContent('');
+  //   setSelectedFile(null);
+  //   setSelectedCategory('');
+  //   setSelectedTags([]);
+  //   setSelectedVisibility('');
+  // }
 
+  function showMangas(){
+    console.log(formData.price);
+  }
 
 
   return(
-    <main id=''>
-      <div className='container'>
+    <main id='debug'>
+      <div className='container py-3'>
 
         {/* H1 + Search  */}
-        <div className='d-flex align-items-center justify-content-between'>
-          <h1>Todolist</h1>
-          <form onSubmit={handleSearchForm}>
-            <div className='mb-3'>
+        <div className='d-flex justify-content-end'>
+          <form onSubmit={handleSearchForm} className=''>
               <input 
                 type="search"
                 className='form-control'
                 name='searchText'
                 id='searchText'
                 aria-describedby='searchHelper'
-                placeholder='🔍 Search ...' 
+                placeholder='🍜 Search ...' 
                 value={searchText}
                 onChange={e=> setSearchText(e.target.value)}
               />
-            </div>
           </form>
         </div>
 
-        {/* Add New Task  */}
-        <form onSubmit={addTask}>  {/* onSubmit event is tied to addTask funct */}
-          <div className='mb-3'>
-            <label htmlFor="task" className="form-label">Enter a new Task</label>
-              {/* Etichetta per il campo di input, htmlFor="task" link this label to input with id="task" */}
-            <div className='input-group mb-3'>
-              <input type="text" 
-                className='form-control'  //bootstrap style
-                placeholder="Recipient's username"
-                aria-label="Recipient's username"  //useful for screen readers
-                aria-describedby='button-addon2'  //for screen readers, link this input to elem with id='button-addon2' (the addTask button)
-                value={newTask}
-                onChange={e=>setNewTask(e.target.value)}  //dinamic edit setNewTask edita il value
-              />
-              < input type = "file" onChange={fileUpload}/>
-              <button className='btn btn-outline-secondary' type='submit' id='button-addon2'>Add Task</button>
-                {/* type='submit' send the form execute addTask */}
-            </div>
-
-            <small id='taskHelperId' className='form-text text-muted'>Type your new task</small>  {/* little instruction under form */}
-          </div>
-        </form>
-
-
-        <form className='my-3'>
+        <form className='my-3 rounded p-4' onSubmit={handleFormSubmit}>
           <div className='row'>
             <div className='form-group col-md-6 '>
               <div className='form-group mb-3'>
-                <label className='' htmlFor="inputTitleBlog">Title</label>
-                <input className='form-control' type="text" id="inputTitleBlog" name="inputTitleBlog" placeholder='Title'/>
+                <label className='' htmlFor="inputTitleBlog">Manhua Title</label>
+                <input className='form-control' type="text" id="inputTitleBlog" name="title" placeholder='Title' aria-label='Title' required value={formData.title} onChange={handleFormField}/>
               </div>
-
               <div className='row mb-3'>
                 <div className='form-group col-md-6 '>
-                  <label htmlFor="fileBlog" className='form-label'>Insert the cover image</label>
-                  <label className="btn btn-primary" htmlFor="fileBlog">Choose File</label> 
-                  <input className="form-control d-none" type="file" id="fileBlog" onChange={handleFileUpload}/>
-                  {fileUpload && <img src={fileUpload} alt='cover image' className='img-fluid rounded'/>}
+                  <label htmlFor="fileBlog" className='form-label'>Add photo: </label><br />
+                  <label className="btn btn-DarkRose" htmlFor="fileBlog">Choose File</label> 
+                  <input className="form-control d-none" type="file" id="fileBlog" name="file" required accept="image/*" onChange={handleFormField}/>  {/* accept="image/*" ACCEPT ONLY IMG! */}
+                  {selectedFile && <img src={selectedFile} alt='cover image' className='img-fluid rounded'/>}
+                  
                 </div>
                 <div className='form-group col-md-6'>
                   <label htmlFor="categorySelect">Select category</label>
-                  <select className='form-select ' id='categorySelect' name='categorySelect' value={selectedCategory} onChange={handleCategoryChange}>
-                    <option value="">Category</option>
+                  <select className='form-select ' id='categorySelect' name='category' value={formData.category} onChange={handleFormField}>
+                    <option value="None">None</option>
                     <option value="Shonen">Shonen</option>
                     <option value="Shojo">Shojo</option>
                     <option value="Seinen">Seinen</option>
@@ -135,63 +215,72 @@ export default function AppMain(){
               <div className='row'>
                 <div className='form-group col-md-6 ps-4'>
                   <div className='row'>
-                    <div className='form-check col-md-6'>
-                      <input className="form-check-input" type="checkbox" value="" id='checkBtnIsekai' name='checkBtnIsekai'/>
-                      <label className='form-check-label' htmlFor="checkBtnIsekai">Isekai</label>
-                    </div>
-                    <div className='form-check col-md-6'>
-                      <input className="form-check-input" type="checkbox" value="" id='checkBtnMecha' name='checkBtnMecha'/>
-                      <label className='form-check-label' htmlFor="checkBtnMecha">Mecha</label>
-                    </div>
-                    <div className='form-check col-md-6'>
-                      <input className="form-check-input" type="checkbox" value="" id='checkBtnSliceofLife' name='checkBtnSliceofLife'/>
-                      <label className='form-check-label' htmlFor="checkBtnSliceofLife">Slice of Life</label>
-                    </div>
-                    <div className='form-check col-md-6'>
-                      <input className="form-check-input" type="checkbox" value="" id='checkBtnRomanticComedy' name='checkBtnRomanticComedy'/>
-                      <label className='form-check-label' htmlFor="checkBtnRomanticComedy">Romantic Comedy</label>
-                    </div>
-                    <div className='form-check col-md-6'>
-                      <input className="form-check-input" type="checkbox" value="" id='checkBtnFantasy' name='checkBtnFantasy'/>
-                      <label className='form-check-label' htmlFor="checkBtnFantasy">Fantasy</label>
-                    </div>
+                    <label htmlFor="tags" className='form-label'>Tags: </label>
+                    {availableTags.map((tag, index) => (
+                      <div key={index} className='form-check col-md-6'>
+                        <input 
+                          className="form-check-input" 
+                          type="checkbox" 
+                          value={tag} 
+                          id={`checkBtn${tag.replace(/\s+/g,'')}`} 
+                          name='tags' 
+                          onChange={handleFormField} 
+                          checked={formData.tags.includes(tag)}
+                        />
+                        <label className='form-check-label' htmlFor={`checkBtn${tag.replace(/\s+/g,'')}`}>
+                          {tag}
+                        </label>
+                      </div>
+                    ))}
                   </div>
+                  
                 </div>
-                <div className='form-group col-md-6 d-flex justify-content-center gap-4'>
-                  <div>
-                    <input className='btn-checks me-1' type="radio" id='radioBtnPost' name='radioPostOrArchive' value="" autoComplete='off'/>
-                    <label className='btn btn-outline-primary' htmlFor="radioBtnPost">Post</label>
+                <div className='form-group col-md-6 '>
+                  <div className='d-flex justify-content-center gap-4'>
+                    <div>
+                      <input className='btn-check me-1' type="radio" id='radioBtnPost' name='visibility' value="post" autoComplete='off' onChange={handleFormField} checked={formData.visibility==='post'}/>
+                      <label className='btn btn-outline-DarkRose' htmlFor="radioBtnPost">Post</label>
+                    </div>
+                    <div>
+                      <input className='btn-check me-1' type="radio" id='radioBtnArchive' name='visibility' value="archive" autoComplete='off' onChange={handleFormField} checked={formData.visibility==='archive'}/>
+                      <label className='btn btn-outline-DarkRose' htmlFor="radioBtnArchive">Archive</label>
+                    </div>
                   </div>
-                  <div>
-                    <input className='btn-checks me-1' type="radio" id='radioBtnArchive' name='radioPostOrArchive' value="" autoComplete='off'/>
-                    <label className='btn btn-outline-primary' htmlFor="radioBtnArchive">Archive</label>
+                  <div className='form-group'>
+                    <label htmlFor="price" className='form-label'>Price</label>
+                    <div className='input-group'>
+                      <span className="input-group-text">$</span>
+                      <input className='form-control' type="number" min="0" step={0.1} id='price' name='price' placeholder='100.00' aria-describedby="pricehelper" value={formData.price} onChange={handleFormField}/>
+                    </div>
+                    <small id="pricehelper" className="form-text text-white">Type the price of your manhua</small>
                   </div>
                 </div>
               </div>
             </div>
             <div className='form-group col-md-6'>
-              <label htmlFor="inputContentBlog">Content</label>
-              <textarea className='form-control' type="text" rows='7' id='inputContentBlog' name='inputContentBlog' placeholder='Content'/>
+              <div className='form-group'>
+                <label htmlFor="inputContentBlog">Content</label>
+                <textarea className='form-control' type="text" rows='7' id='inputContentBlog' name='content' placeholder='Content' aria-label='Content' required value={formData.content} onChange={handleFormField}/>
+              </div>
+              <div className='form-group col-md-8 mt-4 mx-auto'>
+                <button className='btn btn-DarkRose w-100' type='submit' id='btn_sumbit' name='submit'>
+                  <span className='d-flex align-items-center justify-content-center gap-2'>
+                    <span>SAVE</span> 
+                    <i className="bi bi-cloud-arrow-up"/>
+                  </span>
+                </button>
+                <button type="button" onClick={showMangas}>show mangas</button>
+              </div>
             </div>
           </div>
         </form>
 
+        <section className='row row-cols-1 row-cols-sm-1 row-cols-md-2 row-cols-lg-3 mb-3'>
+          {mangas.map((item,index)=><ManhuaCard key={item.id} data={item}/>)}
+        </section>
 
-
-        {/* All Tasks */}
-        <ul className='list-group '>
-          {filteredTasks.map((item,index)=>
-            <li key={index} className='list-group-item d-flex justify-content-between'>
-              {item}
-              <button onClick={handleTrashTaskClick} data-index={index} className='btn btn-danger'>
-                <i className='bi bi-trash'></i>
-              </button>
-            </li>
-          )}
-        </ul>
       </div>
     </main> 
   );
 }
 
-// Lorem ipsum dolor sit amet consectetur adipisicing elit. Ducimus corporis impedit, illo pariatur error itaque dolorem quas delectus adipisci laborum laudantium quisquam debitis facilis id officiis quo illum consequuntur, voluptate nam distinctio ad iure omnis. Sapiente cupiditate quo id modi nihil mollitia cumque ab eos rerum nulla iusto, molestias quas similique officia vel expedita quisquam eveniet veritatis. Minus sequi aspernatur vel similique consectetur consequuntur quidem adipisci aperiam, optio labore est! Mollitia sunt culpa inventore omnis maiores corporis. Velit, id tenetur!
