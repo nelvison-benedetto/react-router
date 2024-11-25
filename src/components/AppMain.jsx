@@ -46,17 +46,14 @@ export default function AppMain(){
     setTasks(newTasks_local);
     setNewTask('');  //clean input
   }
-  function handleTrashTaskClick(e){
-    const taskIndexToTrash = Number(e.target.getAttribute('data-index'));
-    //console.log(tasks, taskIndexToTrash);
-    const newTasks_local = tasks.filter((item,index)=> index !== taskIndexToTrash);
-    console.log(newTasks_local);
-    setTasks(newTasks_local);
+  function handleTrashManga(mangaId){
+    const newMangas_local = mangas.filter((item,index)=> item.id !== mangaId);
+    setMangas(newMangas_local);
   }
 
   useEffect(()=>{
     const filteredMangas = mangas.filter((item,index)=> item.title.toLowerCase().trim().includes(searchText.toLowerCase().trim()));
-    console.log(filteredMangas);
+    //console.log(filteredMangas);
     setFilteredMangas(filteredMangas);
   }, [mangas, searchText]  //with [] useEffect is executed only once when the component is first mounted, now each time mangas/searchText change
   );
@@ -161,23 +158,22 @@ export default function AppMain(){
   // }
 
   function showMangas(){
-    console.log(formData.price);
+    console.log(mangas);
   }
-
 
   return(
     <main id='debug'>
       <div className='container py-3'>
 
-        {/* H1 + Search  */}
         <div className='d-flex justify-content-end'>
           <form onSubmit={handleSearchForm} className=''>
               <input 
                 type="search"
                 className='form-control'
                 name='searchText'
-                id='searchText'
-                aria-describedby='searchHelper'
+                //id='searchText'
+                id='formSearchText'
+                aria-describedby='searchelper'
                 placeholder='🍜 Search ...' 
                 value={searchText}
                 onChange={e=> setSearchText(e.target.value)}
@@ -189,20 +185,20 @@ export default function AppMain(){
           <div className='row'>
             <div className='form-group col-md-6 '>
               <div className='form-group mb-3'>
-                <label className='' htmlFor="inputTitleBlog">Manhua Title</label>
-                <input className='form-control' type="text" id="inputTitleBlog" name="title" placeholder='Title' aria-label='Title' required value={formData.title} onChange={handleFormField}/>
+                <label className='' htmlFor="formTitle">Manhua Title</label>
+                <input className='form-control' type="text" id="formTitle" name="title" placeholder='Title' required value={formData.title} onChange={handleFormField}/>
               </div>
               <div className='row mb-3'>
                 <div className='form-group col-md-6 '>
-                  <label htmlFor="fileBlog" className='form-label'>Add photo: </label><br />
-                  <label className="btn btn-DarkRose" htmlFor="fileBlog">Choose File</label> 
-                  <input className="form-control d-none" type="file" id="fileBlog" name="file" required accept="image/*" onChange={handleFormField}/>  {/* accept="image/*" ACCEPT ONLY IMG! */}
+                  <label htmlFor="formFile" className='form-label'>Add photo: </label><br />
+                  <label className="btn btn-DarkRose" htmlFor="formFile">Choose File</label> 
+                  <input className="form-control d-none" type="file" id="formFile" name="file" required accept="image/*" onChange={handleFormField}/>  {/* accept="image/*" ACCEPT ONLY IMG! */}
                   {selectedFile && <img src={selectedFile} alt='cover image' className='img-fluid rounded'/>}
                   
                 </div>
                 <div className='form-group col-md-6'>
-                  <label htmlFor="categorySelect">Select category</label>
-                  <select className='form-select ' id='categorySelect' name='category' value={formData.category} onChange={handleFormField}>
+                  <label htmlFor="formCategory">Select category</label>
+                  <select className='form-select ' id='formCategory' name='category' value={formData.category} onChange={handleFormField}>
                     <option value="None">None</option>
                     <option value="Shonen">Shonen</option>
                     <option value="Shojo">Shojo</option>
@@ -214,43 +210,45 @@ export default function AppMain(){
               </div>
               <div className='row'>
                 <div className='form-group col-md-6 ps-4'>
-                  <div className='row'>
-                    <label htmlFor="tags" className='form-label'>Tags: </label>
-                    {availableTags.map((tag, index) => (
-                      <div key={index} className='form-check col-md-6'>
-                        <input 
-                          className="form-check-input" 
-                          type="checkbox" 
-                          value={tag} 
-                          id={`checkBtn${tag.replace(/\s+/g,'')}`} 
-                          name='tags' 
-                          onChange={handleFormField} 
-                          checked={formData.tags.includes(tag)}
-                        />
-                        <label className='form-check-label' htmlFor={`checkBtn${tag.replace(/\s+/g,'')}`}>
-                          {tag}
-                        </label>
-                      </div>
-                    ))}
-                  </div>
+                    <div className='row'> 
+                      <label htmlFor="" className='form-label px-0'>
+                        <span className='mx-0 px-0'>Tags:</span>
+                      </label>
+                      {availableTags.map((tag, index) => (
+                        <div key={index} className='form-check col-md-6'>
+                          <input 
+                            className="form-check-input" 
+                            type="checkbox" 
+                            value={tag} 
+                            id={`formTag${tag.replace(/\s+/g,'')}`} 
+                            name='tags'
+                            onChange={handleFormField} 
+                            checked={formData.tags.includes(tag)}
+                          />
+                          <label className='form-check-label' htmlFor={`formTag${tag.replace(/\s+/g,'')}`}>
+                            {tag}
+                          </label>
+                        </div>
+                      ))}
+                    </ div>
                   
                 </div>
                 <div className='form-group col-md-6 '>
                   <div className='d-flex justify-content-center gap-4'>
                     <div>
-                      <input className='btn-check me-1' type="radio" id='radioBtnPost' name='visibility' value="post" autoComplete='off' onChange={handleFormField} checked={formData.visibility==='post'}/>
-                      <label className='btn btn-outline-DarkRose' htmlFor="radioBtnPost">Post</label>
+                      <input className='btn-check me-1' type="radio" id='formVisibilityPost' name='visibility' value="post" autoComplete='off' onChange={handleFormField} checked={formData.visibility==='post'}/>
+                      <label className='btn btn-outline-DarkRose' htmlFor="formVisibilityPost">Post</label>
                     </div>
                     <div>
-                      <input className='btn-check me-1' type="radio" id='radioBtnArchive' name='visibility' value="archive" autoComplete='off' onChange={handleFormField} checked={formData.visibility==='archive'}/>
-                      <label className='btn btn-outline-DarkRose' htmlFor="radioBtnArchive">Archive</label>
+                      <input className='btn-check me-1' type="radio" id='formVisibilityArchive' name='visibility' value="archive" autoComplete='off' onChange={handleFormField} checked={formData.visibility==='archive'}/>
+                      <label className='btn btn-outline-DarkRose' htmlFor="formVisibilityArchive">Archive</label>
                     </div>
                   </div>
                   <div className='form-group'>
-                    <label htmlFor="price" className='form-label'>Price</label>
+                    <label htmlFor="formPrice" className='form-label'>Price</label>
                     <div className='input-group'>
                       <span className="input-group-text">$</span>
-                      <input className='form-control' type="number" min="0" step={0.1} id='price' name='price' placeholder='100.00' aria-describedby="pricehelper" value={formData.price} onChange={handleFormField}/>
+                      <input className='form-control' type="number" min="0" step={0.1} id='formPrice' name='price' placeholder='100.00' aria-describedby="pricehelper" value={formData.price} onChange={handleFormField}/>
                     </div>
                     <small id="pricehelper" className="form-text text-white">Type the price of your manhua</small>
                   </div>
@@ -259,11 +257,11 @@ export default function AppMain(){
             </div>
             <div className='form-group col-md-6'>
               <div className='form-group'>
-                <label htmlFor="inputContentBlog">Content</label>
-                <textarea className='form-control' type="text" rows='7' id='inputContentBlog' name='content' placeholder='Content' aria-label='Content' required value={formData.content} onChange={handleFormField}/>
+                <label htmlFor="formContent">Content</label>
+                <textarea className='form-control' type="text" rows='7' id='formContent' name='content' placeholder='Content' required value={formData.content} onChange={handleFormField}/>
               </div>
               <div className='form-group col-md-8 mt-4 mx-auto'>
-                <button className='btn btn-DarkRose w-100' type='submit' id='btn_sumbit' name='submit'>
+                <button className='btn btn-DarkRose w-100' type='submit' id='formSubmit' name='submit'>
                   <span className='d-flex align-items-center justify-content-center gap-2'>
                     <span>SAVE</span> 
                     <i className="bi bi-cloud-arrow-up"/>
@@ -276,7 +274,7 @@ export default function AppMain(){
         </form>
 
         <section className='row row-cols-1 row-cols-sm-1 row-cols-md-2 row-cols-lg-3 mb-3'>
-          {mangas.map((item,index)=><ManhuaCard key={item.id} data={item}/>)}
+          {filteredMangas.map((item,index)=><ManhuaCard key={item.id} data={item} onTrashManga={handleTrashManga}/>)}  {/*la key serve a map for track*/}
         </section>
 
       </div>

@@ -1,10 +1,8 @@
 //ManhuaCard.jsx
 import ButtonBuy from '../Buttons/ButtonBuy'
+import ButtonTrash from '../Buttons/ButtonTrash';
 
-export default function ManhuaCard({data, children}){
-    console.log(data);
-    console.log(data.file);
-    console.log(data.fileObl);
+export default function ManhuaCard({data, onTrashManga}){
     return(
         <div id='manhuas' className='col'>
             <div className="bg-white rounded px-3 pt-3 d-flex justify-content-center position-relative custom-card">
@@ -14,12 +12,13 @@ export default function ManhuaCard({data, children}){
                     </div>
                     <h1 className="title">{data.title}</h1>
                     <p>{data.content}</p>
+                    <ButtonTrash mangaId={data.id} onTrashManga={onTrashManga}/>
                 </div>
-                {/* <img
+                <img
                     src='../../public/imgs/pin.svg'
                     className="pin-card position-absolute top-0"
                     alt="pin card"
-                />    */}
+                />   
             </div>
         </div>
     );
