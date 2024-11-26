@@ -1,2 +1,27 @@
 @import './index.css'; /* import module x base colors  */
 
+:root{
+  --react-library-black: black;
+  --react-library-white: white;
+}
+
+header{
+  background-color: var(--react-library-black);
+  color: var(--react-library-white);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 2rem;
+  nav{
+    color: var(--react-library-white);
+    display: flex;
+    gap: 2rem;
+    a{
+      color: var(--react-library-white);
+      text-decoration: none;
+      &.active{  /*class .active added by React to the element(NavLink) of <nav>(header) when clicked */
+        text-decoration: underline;
+      }
+    }
+  }
+}
