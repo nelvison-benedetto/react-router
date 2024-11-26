@@ -3,12 +3,20 @@ import ButtonBuy from '../Buttons/ButtonBuy'
 import ButtonTrash from '../Buttons/ButtonTrash';
 
 export default function ManhuaCard({data, onTrashManga}){
+
+    // console.log(process.env.REACT_APP_TARGET_HOST); errori quando usao la env var
+    // console.log(process.env.REACT_APP_TARGET_PORT);
+
+    // const targetHOST = process.env.REACT_APP_TARGET_HOST;
+    // const targetPORT = process.env.REACT_APP_TARGET_PORT;
+    // const targetBaseURL = `${targetHOST}:${targetPORT}/`;
+
     return(
         <div id='manhuas' className='col'>
             <div className="bg-white rounded px-3 pt-3 d-flex justify-content-center position-relative custom-card">
                 <div className="d-flex flex-column gap-2 card-content">
                     <div className="inner-image bg-blue2 d-flex justify-content-center align-items-center">
-                        <img src={data.fileObl} alt="cover image" className="img-fluid"/>
+                        <img src={`http://localhost:3001/${data.file}`} alt="cover image" className="img-fluid"/>  {/*use env vars x localhost:3001!!*/}
                     </div>
                     <h1 className="title">{data.title}</h1>
                     <p>{data.content}</p>

@@ -46,17 +46,37 @@ export default function AppMain(){
     setTasks(newTasks_local);
     setNewTask('');  //clean input
   }
+  
+
   function handleTrashManga(mangaId){
     const newMangas_local = mangas.filter((item,index)=> item.id !== mangaId);
     setMangas(newMangas_local);
   }
 
+  function fetchData(url = 'http://localhost:3001/something'){
+    fetch(url)
+      .then(res => res.json())
+      .then(response =>{
+        console.log(response.data);  //check the data received from server
+        setMangas(response.data);  //upload the data from the other loclhost(prj. express-blog-api-crud) and apply in mangas
+      })
+      .catch(error => {
+        console.error("Error fetching data:", error);
+      });
+  }
+  // useEffect(fetchData, [])
+
+  useEffect(() => {
+    fetchData(); 
+  }, []);   // Run only 1 time at the initial assembly
+
   useEffect(()=>{
     const filteredMangas = mangas.filter((item,index)=> item.title.toLowerCase().trim().includes(searchText.toLowerCase().trim()));
     //console.log(filteredMangas);
     setFilteredMangas(filteredMangas);
-  }, [mangas, searchText]  //with [] useEffect is executed only once when the component is first mounted, now each time mangas/searchText change
+  }, [mangas, searchText]  //executed each time mangas or searchText change
   );
+  
 
   function handleSearchForm(e){
     e.preventDefault();
@@ -70,7 +90,7 @@ export default function AppMain(){
       const fileSelectedURL = URL.createObjectURL(fileSelect);  // Create an object URL for the file
       setFormData((prev) => ({
         ...prev,
-        file: fileSelect,  //at submit with form convert obl->fakepath
+        file: fileSelect,  //at submit with form automatically convert obl->fakepath!! server not accept obl!
       }));
       setSelectedFile(fileSelectedURL);
     }
@@ -95,20 +115,43 @@ export default function AppMain(){
     }
   }
 
+  function generateSlug(theformData) {
+    if(!theformData.title){return '';}
+    const generatedSlug = theformData.title.toLowerCase().replace(/[^a-z0-9\s-]/g,'').replace(/\s+/g,'-').trim();
+    return generatedSlug;
+  }
+
   function handleFormSubmit(e) {
     e.preventDefault()
     const newManga = {  
       id: Date.now(),
       ...formData,
-      fileObl: selectedFile  //PASS FILE OBL TO SEE IMG ON BROWSER!!submit convert automaticaaly obl->fakepath :( 
+      slug: generateSlug(formData),
+      //fileObl: selectedFile  //PASS FILE OBL TO SEE IMG ON BROWSER!!submit convert automaticaaly obl->fakepath :( 
     }
-    setMangas([
-      newManga,
-      ...mangas
-    ]);
+    // setMangas([
+    //   newManga,
+    //   ...mangas
+    // ]);
+    fetch('http://localhost:3001/something', {
+      method: 'POST',
+      body: JSON.stringify(newManga),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+      .then(res => res.json())
+      .then(response => {
+        console.log('Success', response);
+        setMangas(response.data);
+      })
+      .catch(err => console.error('The Error:', err));
+
     setFormData(initialFormData)  //reset
     setSelectedFile(null);
   }
+
+  
 
   // function handleChangeTitle(e){
   //   setSelectedTitle(e.target.value);
@@ -192,7 +235,7 @@ export default function AppMain(){
                 <div className='form-group col-md-6 '>
                   <label htmlFor="formFile" className='form-label'>Add photo: </label><br />
                   <label className="btn btn-DarkRose" htmlFor="formFile">Choose File</label> 
-                  <input className="form-control d-none" type="file" id="formFile" name="file" required accept="image/*" onChange={handleFormField}/>  {/* accept="image/*" ACCEPT ONLY IMG! */}
+                  <input className="form-control d-none" type="file" id="formFile" name="file" accept="image/*" onChange={handleFormField}/>  {/* accept="image/*" ACCEPT ONLY IMG! */}
                   {selectedFile && <img src={selectedFile} alt='cover image' className='img-fluid rounded'/>}
                   
                 </div>
@@ -273,7 +316,7 @@ export default function AppMain(){
           </div>
         </form>
 
-        <section className='row row-cols-1 row-cols-sm-1 row-cols-md-2 row-cols-lg-3 mb-3'>
+        <section className='row row-cols-1 row-cols-sm-1 row-cols-md-2 row-cols-lg-3 g-3 mb-3'>
           {filteredMangas.map((item,index)=><ManhuaCard key={item.id} data={item} onTrashManga={handleTrashManga}/>)}  {/*la key serve a map for track*/}
         </section>
 
