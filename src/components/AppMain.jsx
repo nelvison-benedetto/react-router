@@ -4,6 +4,8 @@ import ManhuaCard from './ManhuaCard/ManhuaCard'
 
 export default function AppMain(){
 
+
+  
   // const initialTasks = ['Learn JS','Learn PHP','Learn Laravel','Learn Python','Learn C#','Learn C++','Learn AI'];
   // const [tasks, setTasks] = useState(initialTasks);  //tasks is the array, setTasks to edit it, initialTasks initial data
   // const [newTask, setNewTask] = useState('');
