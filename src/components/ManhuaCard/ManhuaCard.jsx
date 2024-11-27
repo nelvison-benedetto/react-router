@@ -16,7 +16,7 @@ export default function ManhuaCard({data, onTrashManga}){
             <div className="bg-white rounded px-3 pt-3 d-flex justify-content-center position-relative custom-card">
                 <div className="d-flex flex-column gap-2 card-content">
                     <div className="inner-image bg-blue2 d-flex justify-content-center align-items-center">
-                        <img src={`http://localhost:3001/${data.file}`} alt="cover image" className="img-fluid"/>  {/*use env vars x localhost:3001!!*/}
+                        <img src={`http://localhost:3001/${data.file}`} alt="cover image" className="img-fluid"/>  {/*better env vars x link localhost*/}
                     </div>
                     <h1 className="title">{data.title}</h1>
                     <p>{data.content}</p>

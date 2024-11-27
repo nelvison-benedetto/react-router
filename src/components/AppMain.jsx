@@ -58,7 +58,7 @@ export default function AppMain(){
       .then(res => res.json())
       .then(response =>{
         //console.log(response.data);  //check the data received from server
-        setMangas(response.data);  //upload the data from the other loclhost(prj. express-blog-api-crud) and apply in mangas
+        setMangas(response.data);  //upload data from the other loclhost(prj. express-blog-api-crud) + edit mangas
       })
       .catch(error => {
         console.error("Error fetching data:", error);
@@ -88,12 +88,12 @@ export default function AppMain(){
     if (name === "file" && e.target.files.length > 0) {
       const fileSelect = e.target.files[0];
       if (fileSelect instanceof File) {   //CHECK IF ITS A FILE AND NOT A STR!!
-        const fileSelectedURL = URL.createObjectURL(fileSelect);  //create obl image only to see in the same browser
+        const fileSelectedURL = URL.createObjectURL(fileSelect);  //create an obl image only to view it in the same browser
         setFormData((prev) => ({
           ...prev,
           file: fileSelect,   //at submit always convert automatically obl-->deepfake
         }));
-        console.log('The Type of file:', typeof formData.file);  //when use formData.file instead of e.target.files convert permannently obj->str ?
+        console.log('The Type of file:', typeof formData.file);  
         setSelectedFile(fileSelectedURL);
       }
     }
@@ -132,14 +132,14 @@ export default function AppMain(){
     //   id: Date.now(),
     //   ...formData,
     //   slug: generateSlug(formData),
-    //   //fileObl: selectedFile  //PASS FILE OBL TO SEE IMG ON BROWSER!!submit convert automaticaaly obl->fakepath :( 
+    //   //fileObl: selectedFile  //PASS FILE OBL TO SEE IMG ON BROWSER!!submit convert automaticaaly obl->fakepath 
     // }
     // //setMangas([
     //   //newManga,
     //   //...mangas
     // //]);
 
-    console.log('The Type of file:', typeof formData.file);   //COVERT HERE OBJ->STR !!   
+    console.log('The Type of file:', typeof formData.file);   //COVERT HERE OBJ->STR !!!!
 
     const formDataToSend = new FormData();
     formDataToSend.append('id', Date.now());
