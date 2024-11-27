@@ -57,7 +57,7 @@ export default function AppMain(){
     fetch(url)
       .then(res => res.json())
       .then(response =>{
-        console.log(response.data);  //check the data received from server
+        //console.log(response.data);  //check the data received from server
         setMangas(response.data);  //upload the data from the other loclhost(prj. express-blog-api-crud) and apply in mangas
       })
       .catch(error => {
@@ -86,13 +86,16 @@ export default function AppMain(){
   function handleFormField(e){
     const {name, type, value, checked} = e.target;  //top properties of an input
     if (name === "file" && e.target.files.length > 0) {
-      const fileSelect = e.target.files[0];  // Get the file object
-      const fileSelectedURL = URL.createObjectURL(fileSelect);  // Create an object URL for the file
-      setFormData((prev) => ({
-        ...prev,
-        file: fileSelect,  //at submit with form automatically convert obl->fakepath!! server not accept obl!
-      }));
-      setSelectedFile(fileSelectedURL);
+      const fileSelect = e.target.files[0];
+      if (fileSelect instanceof File) {   //CHECK IF ITS A FILE AND NOT A STR!!
+        const fileSelectedURL = URL.createObjectURL(fileSelect);  //create obl image only to see in the same browser
+        setFormData((prev) => ({
+          ...prev,
+          file: fileSelect,   //at submit always convert automatically obl-->deepfake
+        }));
+        console.log('The Type of file:', typeof formData.file);  //when use formData.file instead of e.target.files convert permannently obj->str ?
+        setSelectedFile(fileSelectedURL);
+      }
     }
     if(name==='tags'){
       const updatedTags = checked ? [...formData.tags, value] :  formData.tags.filter(item=>item!==value);
@@ -113,6 +116,8 @@ export default function AppMain(){
         [name]: value
       }))
     }
+
+    console.log('The Type of file:', typeof formData.file);    
   }
 
   function generateSlug(theformData) {
@@ -123,22 +128,50 @@ export default function AppMain(){
 
   function handleFormSubmit(e) {
     e.preventDefault()
-    const newManga = {  
-      id: Date.now(),
-      ...formData,
-      slug: generateSlug(formData),
-      //fileObl: selectedFile  //PASS FILE OBL TO SEE IMG ON BROWSER!!submit convert automaticaaly obl->fakepath :( 
+    // const newManga = {  
+    //   id: Date.now(),
+    //   ...formData,
+    //   slug: generateSlug(formData),
+    //   //fileObl: selectedFile  //PASS FILE OBL TO SEE IMG ON BROWSER!!submit convert automaticaaly obl->fakepath :( 
+    // }
+    // //setMangas([
+    //   //newManga,
+    //   //...mangas
+    // //]);
+
+    console.log('The Type of file:', typeof formData.file);   //COVERT HERE OBJ->STR !!   
+
+    const formDataToSend = new FormData();
+    formDataToSend.append('id', Date.now());
+    formDataToSend.append('title', formData.title);
+    formDataToSend.append('content', formData.content);
+    formDataToSend.append('price', formData.price);
+    if(formData.file && formData.file instanceof File){
+
+      formDataToSend.append('file', formData.file);
     }
-    // setMangas([
-    //   newManga,
-    //   ...mangas
-    // ]);
+    else{console.log("not obj file type!!");}
+    formDataToSend.append('category', formData.category);
+    formDataToSend.append('visibility', formData.visibility);
+    formDataToSend.append('tags', formData.tags);
+    formDataToSend.append('slug', generateSlug(formData));
+    
+    for (let pair of formDataToSend.entries()) {
+      console.log(`${pair[0]}:`, pair[1]);
+    }
+
+
+    //console.log('File:', formData.file);
+    // console.log('Type of file:', typeof formDataToSend.file);
+    // console.log('Is it a File object?', formDataToSend.file instanceof File);
+
     fetch('http://localhost:3001/something', {
       method: 'POST',
-      body: JSON.stringify(newManga),
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      // body: JSON.stringify(newManga),  //use a Form Data x Files!!
+      // headers: {
+      //   'Content-Type': 'application/json',
+      // },
+      body: formDataToSend,
     })
       .then(res => res.json())
       .then(response => {
@@ -148,7 +181,7 @@ export default function AppMain(){
       .catch(err => console.error('The Error:', err));
 
     setFormData(initialFormData)  //reset
-    setSelectedFile(null);
+    setSelectedFile(null);  
   }
 
   
@@ -229,7 +262,7 @@ export default function AppMain(){
             <div className='form-group col-md-6 '>
               <div className='form-group mb-3'>
                 <label className='' htmlFor="formTitle">Manhua Title</label>
-                <input className='form-control' type="text" id="formTitle" name="title" placeholder='Title' required value={formData.title} onChange={handleFormField}/>
+                <input className='form-control' type="text" id="formTitle" name="title" placeholder='Title'  value={formData.title} onChange={handleFormField}/> {/* required value= */}
               </div>
               <div className='row mb-3'>
                 <div className='form-group col-md-6 '>
@@ -301,7 +334,7 @@ export default function AppMain(){
             <div className='form-group col-md-6'>
               <div className='form-group'>
                 <label htmlFor="formContent">Content</label>
-                <textarea className='form-control' type="text" rows='7' id='formContent' name='content' placeholder='Content' required value={formData.content} onChange={handleFormField}/>
+                <textarea className='form-control' type="text" rows='7' id='formContent' name='content' placeholder='Content' value={formData.content} onChange={handleFormField}/>  {/*required value= */}
               </div>
               <div className='form-group col-md-8 mt-4 mx-auto'>
                 <button className='btn btn-DarkRose w-100' type='submit' id='formSubmit' name='submit'>
