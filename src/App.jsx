@@ -6,10 +6,7 @@ import HomePage from './pages/HomePage'
 import AboutPage from './pages/AboutPage'
 import BooksPage from './pages/BooksPage'
 import ContactsPage from './pages/ContactsPage'
-
-import AppHeader from './components/AppHeader'
-import AppMain from './components/AppMain'
-import AppFooter from './components/AppFooter'
+import SingleMangaPage from './pages/SingleMangaPage'
 
 function App() {
   const [count, setCount] = useState(0)
@@ -22,7 +19,8 @@ function App() {
             <Route path='/' element={<HomePage/>}/>
             <Route path='/books' element={<BooksPage/>}/>
             <Route path='/about' element={<AboutPage/>}/>
-            <Route path='/contacts' element={<ContactsPage/>}/>  
+            <Route path='/contacts' element={<ContactsPage/>}/>
+            <Route path='/manga/:id' element={<SingleMangaPage/>}/>    
           </Route>
         </Routes>
       </BrowserRouter>

@@ -7,9 +7,9 @@ export default function DefaultLayout(){
     return(
       <>
         <AppHeader/>
-        <main>
+        
             <Outlet/>
-        </main>
+        
         <AppFooter/>
       </>
     );
