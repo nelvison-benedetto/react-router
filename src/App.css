@@ -64,3 +64,20 @@ form{
     left: 0;
     background-color:  rgba(0, 0, 0, 0.7)
 }
+
+nav{
+    color: white;
+    display: flex;
+    gap: 2rem;
+    a{
+      color: var(--react-library-white);
+      text-decoration: none;
+      &.active{  /*class .active added by React to the element(NavLink) of <nav>(header) when clicked */
+        text-decoration: underline;
+      }
+    }
+}
+
+h2{
+    color: white;
+}
