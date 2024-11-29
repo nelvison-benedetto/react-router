@@ -1,6 +1,7 @@
 //ManhuaCard.jsx
 import ButtonBuy from '../Buttons/ButtonBuy'
 import ButtonTrash from '../Buttons/ButtonTrash';
+import { Link } from 'react-router-dom';
 
 export default function ManhuaCard({data, onTrashManga}){
 
@@ -15,11 +16,13 @@ export default function ManhuaCard({data, onTrashManga}){
         <div id='manhuas' className='col'>
             <div className="bg-white rounded px-3 pt-3 d-flex justify-content-center position-relative custom-card">
                 <div className="d-flex flex-column gap-2 card-content">
-                    <div className="inner-image bg-blue2 d-flex justify-content-center align-items-center">
-                        <img src={`http://localhost:3001/${data.file}`} alt="cover image" className="img-fluid"/>  {/*better env vars x link localhost*/}
-                    </div>
-                    <h1 className="title">{data.title}</h1>
-                    <p>{data.content}</p>
+                    <Link to={`/manga/${data.id}`}>
+                        <div className="inner-image bg-blue2 d-flex justify-content-center align-items-center">
+                            <img src={`http://localhost:3001/${data.file}`} alt="cover image" className="img-fluid"/>  {/*better env vars x link localhost*/}
+                        </div>
+                        <h1 className="title">{data.title}</h1>
+                        <p>{data.content}</p>
+                    </Link>
                     <ButtonTrash mangaId={data.id} onTrashManga={onTrashManga}/>
                 </div>
                 <img

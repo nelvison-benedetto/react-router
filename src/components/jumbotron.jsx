@@ -1,4 +1,4 @@
-export default function Jumbotron({pageTitle, pageDescription}){
+export default function Jumbotron({pageTitle, pageDescription , bgImage=''}){
     return(
         <div className="container py-5 ">
             <h1 className="display-5 fw-bold">{pageTitle}</h1>

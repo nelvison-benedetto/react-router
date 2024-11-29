@@ -288,29 +288,29 @@ export default function AppMain(){
               </div>
               <div className='row'>
                 <div className='form-group col-md-6 ps-4'>
-                    <div className='row'> 
-                      <label htmlFor="" className='form-label px-0'>
-                        <span className='mx-0 px-0'>Tags:</span>
-                      </label>
-                      {availableTags.map((tag, index) => (
-                        <div key={index} className='form-check col-md-6'>
-                          <input 
-                            className="form-check-input" 
-                            type="checkbox" 
-                            value={tag} 
-                            id={`formTag${tag.replace(/\s+/g,'')}`} 
-                            name='tags'
-                            onChange={handleFormField} 
-                            checked={formData.tags.includes(tag)}
-                          />
-                          <label className='form-check-label' htmlFor={`formTag${tag.replace(/\s+/g,'')}`}>
-                            {tag}
-                          </label>
-                        </div>
-                      ))}
-                    </ div>
-                  
+                  <div className='row'> 
+                    <label className='px-0'>
+                      <span className='mx-0 px-0'>Tags:</span>
+                    </label>
+                    {availableTags.map((tag, index) => (
+                      <div key={index} className='form-check col-md-6'>
+                        <input 
+                          className="form-check-input" 
+                          type="checkbox" 
+                          value={tag} 
+                          id={`formTag${tag.replace(/\s+/g,'')}`} 
+                          name='tags'
+                          onChange={handleFormField} 
+                          checked={formData.tags.includes(tag)}
+                        />
+                        <label className='form-check-label' htmlFor={`formTag${tag.replace(/\s+/g,'')}`}>
+                          {tag}
+                        </label>
+                      </div>
+                    ))}
+                  </ div>
                 </div>
+
                 <div className='form-group col-md-6 '>
                   <div className='d-flex justify-content-center gap-4'>
                     <div>
