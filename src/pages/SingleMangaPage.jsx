@@ -9,6 +9,8 @@ export default function SingleMangaPage(){
     console.log({id});
     const url = `http://localhost:3001/manga/${id}`;
 
+
+    
     useEffect(()=>{
         fetch(url)
           .then(res=>res.json())
